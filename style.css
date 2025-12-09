@@ -1,0 +1,16 @@
+body{
+    background-color: goldenrod;
+}
+.joe{
+    font-size: 90;
+    font-weight: bolder;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+}
+.jim{
+    text-align: center;
+}
+
+.chuck{
+    align-content: center;
+}
