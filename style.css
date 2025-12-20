@@ -29,6 +29,7 @@ body {
 	background-size: 600px 600px;
 	animation: snow 3s linear infinite;
 	content: "";
+    pointer-events: none;
 }
 .snow:after {
 	margin-left: -200px;
