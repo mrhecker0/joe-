@@ -18,3 +18,7 @@ body {
 	background: linear-gradient(#123 30%, #667);
 	overflow: hidden;
 }
+
+.bob{
+	width: 50%;
+}
