@@ -4,14 +4,11 @@
 =================================================== */
 
 // ─── Constants ──────────────────────────────────────
-const MODEL = 'claude-sonnet-4-20250514';
-const LS_KEY_API  = 'cf_api_key';
-const LS_KEY_VER  = 'cf_version';
+const MODEL      = 'claude-sonnet-4-20250514';
+const WORKER_URL = 'https://commandforge.YOUR-SUBDOMAIN.workers.dev'; // ← replace after deploying
+const LS_KEY_VER = 'cf_version';
 
 // ─── DOM refs ────────────────────────────────────────
-const apiKeyInput    = document.getElementById('apiKey');
-const saveKeyBtn     = document.getElementById('saveKey');
-const keySavedMsg    = document.getElementById('keySaved');
 const versionSelect  = document.getElementById('versionSelect');
 const versionGate    = document.getElementById('versionGate');
 const mainTool       = document.getElementById('mainTool');
@@ -38,24 +35,12 @@ const bbCopyBtn     = document.getElementById('bb-copy-cmd');
 
 // ─── Init ────────────────────────────────────────────
 (function init() {
-  const savedKey = localStorage.getItem(LS_KEY_API);
-  if (savedKey) apiKeyInput.value = savedKey;
-
   const savedVer = localStorage.getItem(LS_KEY_VER);
   if (savedVer) {
     versionSelect.value = savedVer;
     checkVersionGate();
   }
 })();
-
-// ─── API Key ─────────────────────────────────────────
-saveKeyBtn.addEventListener('click', () => {
-  const key = apiKeyInput.value.trim();
-  if (!key) return;
-  localStorage.setItem(LS_KEY_API, key);
-  keySavedMsg.hidden = false;
-  setTimeout(() => { keySavedMsg.hidden = true; }, 2000);
-});
 
 // ─── Version Gate ────────────────────────────────────
 versionSelect.addEventListener('change', () => {
@@ -114,11 +99,6 @@ promptInput.addEventListener('keydown', e => {
 });
 
 async function runGenerate() {
-  const key = localStorage.getItem(LS_KEY_API) || apiKeyInput.value.trim();
-  if (!key) {
-    showError('Enter your Anthropic API key and click Save.');
-    return;
-  }
   const version = versionSelect.value;
   if (!version) {
     showError('Select a Minecraft version first.');
@@ -144,14 +124,9 @@ async function runGenerate() {
   const systemPrompt = buildSystemPrompt(version);
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(WORKER_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type':         'application/json',
-        'x-api-key':            key,
-        'anthropic-version':    '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model:      MODEL,
         max_tokens: 2048,
